@@ -1,0 +1,116 @@
+---
+title: "HW3"
+author: "Yola Charara"
+date: "2025-10-23"
+output: html_document
+---
+# Exercise 2
+
+# min-max normalization 
+min_max_norm <- function(a, new_min, new_max) {
+  old_min <- min(a)
+  old_max <- max(a)
+  scaled <- ((a - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
+  return(scaled)
+}
+
+# using age data
+age <- c(13, 15, 16, 16, 19, 20, 20, 21, 22, 22, 25, 25, 25, 25, 
+         30, 33, 33, 35, 35, 35, 35, 36, 40, 45, 46, 52, 70)
+
+# normalize to [0,1]
+min_max_norm(age, 0, 1)
+
+# normalize to [100,200]
+min_max_norm(age, 100, 200)
+
+
+# Exercise 3 (continued)
+
+# Subsets of decision tree
+
+# Entropy function
+entropy <- function(p) {
+  p <- p / sum(p)
+  p <- p[p > 0]
+  -sum(p * log2(p))
+}
+
+# Information gain function
+gain <- function(parent, subsets) {
+  total <- sum(parent)
+  H_parent <- entropy(parent)
+  H_sub <- sum(sapply(subsets, function(s) sum(s) / total * entropy(s)))
+  H_parent - H_sub
+}
+
+# Junior count = 113, Senior count = 52
+parent <- c(113, 52)
+entropy(parent)
+
+# Subsets by Salary
+
+# Salary: 26K_30K
+salary_26_30 <- c(junior = 46, senior = 0)
+
+# Salary: 31K_35K
+salary_31_35 <- c(junior = 40, senior = 0)
+
+# Salary: 36K_40K
+salary_36_40 <- c(junior = 0, senior = 4)
+
+# Salary: 41K_45K
+salary_41_45 <- c(junior = 4, senior = 0)
+
+# Salary: 46K_50K
+salary_46_50 <- c(junior = 23, senior = 40)
+
+# Salary: 66K_70K
+salary_66_70 <- c(junior = 0, senior = 8)
+
+# Information gain for Salary
+gain_salary <- gain(
+  parent,
+  list(salary_26_30, salary_31_35, salary_36_40, salary_41_45, salary_46_50, salary_66_70)
+)
+gain_salary
+
+# For Salary = 46K_50K, compute info gain for Department and Age
+
+# Data within Salary = 46K_50K
+salary_46_50_subset <- data.frame(
+  department = c("systems", "systems", "sales", "marketing"),
+  age = c("21_25", "26_30", "31_35", "36_40"),
+  status = c("junior", "junior", "senior", "senior"),
+  count = c(20, 3, 30, 10)
+)
+
+# Junior = 23, Senior = 40
+entropy(c(23, 40))
+
+# Department split
+dept_split <- list(
+  systems = c(23, 0),
+  sales = c(0, 30),
+  marketing = c(0, 10)
+)
+gain(c(23, 40), dept_split)
+
+# Age split
+age_split <- list(
+  "21_25" = c(20, 0),
+  "26_30" = c(3, 0),
+  "31_35" = c(0, 30),
+  "36_40" = c(0, 10)
+)
+gain(c(23, 40), age_split)
+
+
+# Exercise 4
+cat("
+IF Salary in [26K_30K, 31K_35K, 41K_45K] THEN Status = Junior
+IF Salary in [36K_40K, 66K_70K] THEN Status = Senior
+IF Salary = 46K_50K AND Age in [21_25, 26_30] THEN Status = Junior
+IF Salary = 46K_50K AND Age in [31_35, 36_40] THEN Status = Senior
+") 
+
