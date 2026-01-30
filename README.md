@@ -1,4 +1,4 @@
-Data Mining — Applied Analysis & Project Work
+# Data Mining — Applied Analysis & Project Work
 
 This repository contains homework assignments and a data mining project completed as part of a Data Mining course. The work focuses on extracting patterns, trends, and insights from real-world datasets using analytical and machine learning techniques.
 
